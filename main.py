@@ -58,3 +58,7 @@ async def read_lore(request: Request):
 @app.get("/lore/neocorps", response_class=HTMLResponse)
 async def read_lore(request: Request):
     return templates.TemplateResponse("neocorpinfo.html", {"request": request})
+
+@app.get("/lore/weapons", response_class=HTMLResponse)
+async def read_lore(request: Request):
+    return templates.TemplateResponse("weaponinfo.html", {"request": request})
