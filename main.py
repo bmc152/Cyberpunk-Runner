@@ -1,12 +1,16 @@
+import uvicorn
+import requests
 import fastapi as _fastapi
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi import Request
 
 #Decorator when creating endpoints
 app = _fastapi.FastAPI()
 
 #Imports HTML Templates via Jinja2
+app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="htmlDirectory")
 
 if __name__ == "__main__":
@@ -29,6 +33,9 @@ async def read_home():
                 <div class="row">
                     <div class="col">
                         <h1>Cyberpunk Helper</h1>
+                        <form action="http://127.0.0.1:8000/lore/">
+                            <input type="submit" value="Info" class="btn btn-dark" />
+                        </form>
                     </div>
                 </div>
             </div>
@@ -37,8 +44,17 @@ async def read_home():
     """
     return HTMLResponse(content=html_content, status_code=200)
 
-@app.get("/lore")
-async def read_lore():
-    html_content = """
-    """
-    return HTMLResponse(content=html_content, status_code=200)
+############
+#Lore Pages#
+############
+@app.get("/lore", response_class=HTMLResponse)
+async def read_lore(request: Request):
+    return templates.TemplateResponse("lorepage.html", {"request": request})
+
+@app.get("/lore/cyberware", response_class=HTMLResponse)
+async def read_lore(request: Request):
+    return templates.TemplateResponse("cyberwareinfo.html", {"request": request})
+
+@app.get("/lore/neocorps", response_class=HTMLResponse)
+async def read_lore(request: Request):
+    return templates.TemplateResponse("neocorpinfo.html", {"request": request})
